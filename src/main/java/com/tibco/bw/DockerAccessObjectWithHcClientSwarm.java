@@ -708,15 +708,16 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
 
        
         public Object handleResponse(HttpResponse response) throws IOException {
-            try /*(/*InputStream stream = response.getEntity().getContent())*/ {
+    /*        try  {
             	InputStream stream = response.getEntity().getContent();
+            	
                 // Parse text as json
-                EntityStreamReaderUtil.processJsonStream(handler, stream);
+               EntityStreamReaderUtil.processJsonStream(handler, stream);
             }
             finally{
             	
-            }
-            return null;
+            }*/
+            return response;
         }
     }
 

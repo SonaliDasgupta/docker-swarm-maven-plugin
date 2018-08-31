@@ -85,7 +85,7 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 			String url=	String.format("%s/%s", baseUrl, "swarm/init");
 			String listenAdr= baseUrl.replace("http:", "");
 			Map<String, Object> props= new HashMap<String, Object>();
-			props.put("ListenAddr", listenAdr);
+			props.put("ListenAddr", "0.0.0.0:2377"); //ADD PROP OPTION FOR LISTEN ADDR, ONLY THR HOST NEEDED
 		//	props.put("AdvertiseAddr", dockerSwarmAddress);
 			props.put("AdvertiseAddr", "192.168.0.103");
 			props.put("ForceNewCluster", false); // CHANGE LATER
@@ -105,7 +105,7 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 			
 		 catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//	e.printStackTrace(); //THIS EXCEPTION COMES WHEN THE NODE TRIES TO JOIN ALREADY JOINED, JUST LOG THE MESSAGE
 		}	
 	}}
 	
