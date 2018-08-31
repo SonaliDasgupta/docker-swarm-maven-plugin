@@ -1,0 +1,5 @@
+com/tibco/bw/swarm/utils/Utils.class
+com/tibco/bw/InitSwarmMojo.class
+com/tibco/bw/DockerAccessObjectWithHcClientSwarm$HcChunkedResponseHandlerWrapper.class
+com/tibco/bw/DockerAccessObjectWithHcClientSwarm.class
+com/tibco/bw/DockerAccessObjectWithHcClientSwarm$1.class

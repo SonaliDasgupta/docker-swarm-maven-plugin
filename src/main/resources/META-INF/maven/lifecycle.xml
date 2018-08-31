@@ -1,0 +1,13 @@
+<lifecycles>
+  <lifecycle>
+    <id>init</id>
+    <phases>
+      <phase>
+        <id>install</id>
+        <configuration>
+          
+        </configuration>
+      </phase>
+    </phases>
+  </lifecycle>
+</lifecycles>
