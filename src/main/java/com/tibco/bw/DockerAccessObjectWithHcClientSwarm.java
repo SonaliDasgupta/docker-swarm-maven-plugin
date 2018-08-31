@@ -10,6 +10,7 @@ import io.fabric8.maven.docker.util.Logger;
 
 
 
+
 import java.io.*;
 import java.net.URI;
 import java.util.*;
@@ -41,6 +42,8 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.tibco.bw.DockerAccessObjectWithHcClientSwarm.HcChunkedResponseHandlerWrapper;
 
 import static java.net.HttpURLConnection.*;
 
@@ -111,47 +114,7 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
     
 
     
-  /*  @Override
-    public void startExecContainer(String containerId, LogOutputSpec outputSpec) throws DockerAccessException {
-        try {
-            String url = urlBuilder.startExecContainer(containerId);
-            JSONObject request = new JSONObject();
-            request.put("Detach", false);
-            request.put("Tty", true);
-
-            delegate.post(url, request.toString(), createExecResponseHandler(outputSpec), HTTP_OK);
-        } catch (Exception e) {
-            throw new DockerAccessException(e, "Unable to start container id [%s]", containerId);
-        }
-    }
-
-    
-   
-  /*  private ResponseHandler<Object> createExecResponseHandler(LogOutputSpec outputSpec) throws FileNotFoundException {
-        final LogCallback callback = new DefaultLogCallback(outputSpec);
-        return new ResponseHandler<Object>() {
-          
-        	@Override
-            public Object handleResponse(HttpResponse response) throws IOException {
-                try (InputStream stream = response.getEntity().getContent()) {
-                    LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream));
-                    String line;
-                    try {
-                        callback.open();
-                        while ( (line = reader.readLine()) != null) {
-                            callback.log(1, new Timestamp(), line);
-                        }
-                    } catch (LogCallback.DoneException e) {
-                        // Ok, we stop here ...
-                    } finally {
-                        callback.close();
-                    }
-                }
-                return null;
-            }
-        };
-    }*/
-
+  
     
     public String createExecContainer(String containerId, Arguments arguments) throws DockerAccessException {
         String url = urlBuilder.createExecContainer(containerId);
@@ -253,34 +216,7 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
         return extractor;
     }
 
- /*   @Override
-    public List<Container> getContainersForImage(String image) throws DockerAccessException {
-        String url;
-        String serverApiVersion = getServerApiVersion();
-        if (EnvUtil.greaterOrEqualsVersion(serverApiVersion, "1.23")) {
-            // For Docker >= 1.11 we can use a new filter when listing containers
-            url = urlBuilder.listContainers("ancestor",image);
-        } else {
-            // For older versions (< Docker 1.11) we need to iterate over the containers.
-            url = urlBuilder.listContainers();
-        }
-
-        try {
-            String response = delegate.get(url, HTTP_OK);
-            JSONArray array = new JSONArray(response);
-            List<Container> containers = new ArrayList<>();
-
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject element = array.getJSONObject(i);
-                if (image.equals(element.getString("Image"))) {
-                    containers.add(new ContainersListElement(element));
-                }
-            }
-            return containers;
-        } catch (IOException e) {
-            throw new DockerAccessException(e.getMessage());
-        }
-    }*/
+ 
 
     
     public ContainerDetails getContainer(String containerIdOrName) throws DockerAccessException {
@@ -671,7 +607,7 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
     
     
     
-    void doInitSwarm(String url, String body, HcChunkedResponseHandlerWrapper handler, int status,
+    public void communicateWithSwarm(String url, String body, HcChunkedResponseHandlerWrapper handler, int status,
             int retries) throws IOException{
     	Map<String, String> headers=new HashMap<String, String>();
     	headers.put("Content-Type", "application/json");
@@ -702,7 +638,7 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
 
         private EntityStreamReaderUtil.JsonEntityResponseHandler handler;
 
-        HcChunkedResponseHandlerWrapper(EntityStreamReaderUtil.JsonEntityResponseHandler handler) {
+        public HcChunkedResponseHandlerWrapper(EntityStreamReaderUtil.JsonEntityResponseHandler handler) {
             this.handler = handler;
         }
 
@@ -717,6 +653,7 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
             finally{
             	
             }*/
+        	System.out.println(response);
             return response;
         }
     }
@@ -763,6 +700,31 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
 
 	public void removeVolume(String name) throws DockerAccessException {
 		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
+
+
+	public void communicateWithSwarmGet(String url,
+			HcChunkedResponseHandlerWrapper handler,
+			int status, int retries) {
+		Map<String, String> headers=new HashMap<String, String>();
+    	headers.put("Content-Type", "application/json");
+    	
+    	
+    	for (int i = 0; i <= retries; i++) {
+            try {
+				delegate.get(url, handler, HTTP_OK);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+        }
 		
 	}
 }

@@ -11,7 +11,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tibco.bw.DockerAccessObjectWithHcClientSwarm.HcChunkedResponseHandlerWrapper;
@@ -21,13 +20,14 @@ import io.fabric8.maven.docker.AbstractDockerMojo;
 import io.fabric8.maven.docker.access.DockerAccessException;
 import io.fabric8.maven.docker.access.ExecException;
 import io.fabric8.maven.docker.access.chunked.PullOrPushResponseJsonHandler;
-import io.fabric8.maven.docker.service.DockerAccessFactory;
-import io.fabric8.maven.docker.service.DockerAccessFactory.DockerAccessContext;
 import io.fabric8.maven.docker.service.ServiceHub;
+import io.fabric8.maven.docker.service.DockerAccessFactory.DockerAccessContext;
 
 
-@Mojo(name = "init", defaultPhase = LifecyclePhase.INSTALL)
-public class InitSwarmMojo extends AbstractDockerMojo{
+@Mojo(name = "join", defaultPhase = LifecyclePhase.INSTALL)
+public class JoinSwarmMojo extends AbstractDockerMojo {
+	
+	
 	
 	@Parameter(property="docker.swarm.address")
 	private String dockerSwarmAddress;
@@ -48,21 +48,24 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 	    private String certPath;
 	 
 	 
-	 /*2 appraoches for getting these props:
-	1. define in xml tags similar to docker maven plugin : see how its done in code (preferred) - explore how the props turn up in xml tags
-	2. see the application project, read in docker-dev props, and take - only for now
-	*/
+	 @Parameter(property= "bwdocker.remoteAddr")
+	 private String remoteAddr;
 	 
+	 @Parameter(property = "bwdocker.joinToken")
+	 private String token;
 	 
-	
 
 	@Override
 	protected void executeInternal(ServiceHub serviceHub)
 			throws DockerAccessException, ExecException, MojoExecutionException {
-		
 		Properties dockerProp= Utils.loadDockerProps();
 		baseUrl= dockerProp.getProperty("bwdocker.host");
 		numRetries=3;
+		remoteAddr="0.0.0.0:2377"; //FOR NOW, READ FROM docker-dev.props later
+		// remoteAddr = dockerProp.getProperty("bwdocker.remoteAddr");
+		
+		token = dockerProp.getProperty("bwdocker.joinToken");
+		
 	
 		
 		
@@ -82,13 +85,18 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 			}
 			
 		
-			String url=	String.format("%s/%s", baseUrl, "swarm/init");
+			String url=	String.format("%s/%s", baseUrl, "swarm/join");
 			String listenAdr= baseUrl.replace("http:", "");
 			Map<String, Object> props= new HashMap<String, Object>();
 			props.put("ListenAddr", "0.0.0.0:2377"); //ADD PROP OPTION FOR LISTEN ADDR, ONLY THR HOST NEEDED
 		//	props.put("AdvertiseAddr", dockerSwarmAddress);
 			props.put("AdvertiseAddr", "192.168.0.103");
-			props.put("ForceNewCluster", false); // CHANGE LATER
+			String[] addr= new String[10];
+			addr[0]= remoteAddr;
+			props.put("RemoteAddrs", addr);
+			
+			
+			props.put("JoinToken", token); // CHANGE LATER
 			//ADD OTHER FIELDS ACCORDING TO THE Docker engine REST API
 			
 			
@@ -109,9 +117,3 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 		}	
 	}}
 	
-	
-	
-	
-	
-
-

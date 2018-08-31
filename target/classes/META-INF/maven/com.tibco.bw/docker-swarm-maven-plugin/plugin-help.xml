@@ -11,6 +11,253 @@
   <goalPrefix>docker-swarm</goalPrefix>
   <mojos>
     <mojo>
+      <goal>getservices</goal>
+      <requiresDirectInvocation>false</requiresDirectInvocation>
+      <requiresProject>true</requiresProject>
+      <requiresReports>false</requiresReports>
+      <aggregator>false</aggregator>
+      <requiresOnline>false</requiresOnline>
+      <inheritedByDefault>true</inheritedByDefault>
+      <phase>pre-integration-test</phase>
+      <implementation>com.tibco.bw.docker.swarm.services.GetServicesMojo</implementation>
+      <language>java</language>
+      <instantiationStrategy>per-lookup</instantiationStrategy>
+      <executionStrategy>once-per-session</executionStrategy>
+      <threadSafe>false</threadSafe>
+      <parameters>
+        <parameter>
+          <name>apiVersion</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>authConfig</name>
+          <type>io.fabric8.maven.docker.config.RegistryAuthConfiguration</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>autoPull</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>baseUrl</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>certPath</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>dockerHost</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>URL to docker daemon</description>
+        </parameter>
+        <parameter>
+          <name>dockerSwarmAddress</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>execution</name>
+          <type>org.apache.maven.plugin.MojoExecution</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>filter</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Whether to restrict operation to a single image. This can be either the image or an alias name. It can also be comma separated list. This parameter has to be set via the command line s system property.</description>
+        </parameter>
+        <parameter>
+          <name>forceLeave</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>forceNewCluster</name>
+          <type>java.lang.Boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>imagePullPolicy</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>images</name>
+          <type>java.util.List</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Image configurations configured directly.</description>
+        </parameter>
+        <parameter>
+          <name>keepContainer</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>logDate</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>logStdout</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>machine</name>
+          <type>io.fabric8.maven.docker.config.DockerMachineConfiguration</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>maxConnections</name>
+          <type>int</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>numRetries</name>
+          <type>int</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>registry</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>remoteAddr</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>removeVolumes</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>session</name>
+          <type>org.apache.maven.execution.MavenSession</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>skip</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>skipExtendedAuth</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Skip extended authentication</description>
+        </parameter>
+        <parameter>
+          <name>skipMachine</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Whether the usage of docker machine should be skipped competely</description>
+        </parameter>
+        <parameter>
+          <name>useColor</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>verbose</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>volumes</name>
+          <type>java.util.List</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Volume configuration</description>
+        </parameter>
+      </parameters>
+      <configuration>
+        <apiVersion implementation="java.lang.String">${docker.apiVersion}</apiVersion>
+        <autoPull implementation="java.lang.String">${docker.autoPull}</autoPull>
+        <baseUrl implementation="java.lang.String">${bwdocker.host}</baseUrl>
+        <certPath implementation="java.lang.String">${bwdocker.certPath}</certPath>
+        <dockerHost implementation="java.lang.String">${docker.host}</dockerHost>
+        <dockerSwarmAddress implementation="java.lang.String">${docker.swarm.address}</dockerSwarmAddress>
+        <execution implementation="org.apache.maven.plugin.MojoExecution">${mojoExecution}</execution>
+        <filter implementation="java.lang.String">${docker.filter}</filter>
+        <forceLeave implementation="boolean">${bwdocker.forceLeave}</forceLeave>
+        <forceNewCluster implementation="java.lang.Boolean">${docker.swarm.force.newcluster}</forceNewCluster>
+        <imagePullPolicy implementation="java.lang.String">${docker.imagePullPolicy}</imagePullPolicy>
+        <keepContainer implementation="boolean" default-value="false">${docker.keepContainer}</keepContainer>
+        <logDate implementation="java.lang.String">${docker.logDate}</logDate>
+        <logStdout implementation="boolean" default-value="false">${docker.logStdout}</logStdout>
+        <maxConnections implementation="int" default-value="100">${docker.maxConnections}</maxConnections>
+        <numRetries implementation="int">${docker.swarm.retries}</numRetries>
+        <registry implementation="java.lang.String">${docker.registry}</registry>
+        <remoteAddr implementation="java.lang.String">${bwdocker.remoteAddr}</remoteAddr>
+        <removeVolumes implementation="boolean" default-value="false">${docker.removeVolumes}</removeVolumes>
+        <session implementation="org.apache.maven.execution.MavenSession">${session}</session>
+        <skip implementation="boolean" default-value="false">${docker.skip}</skip>
+        <skipExtendedAuth implementation="boolean" default-value="false">${docker.skip.extendedAuth}</skipExtendedAuth>
+        <skipMachine implementation="boolean" default-value="false">${docker.skip.machine}</skipMachine>
+        <useColor implementation="boolean" default-value="true">${docker.useColor}</useColor>
+        <verbose implementation="boolean" default-value="false">${docker.verbose}</verbose>
+      </configuration>
+    </mojo>
+    <mojo>
       <goal>init</goal>
       <requiresDirectInvocation>false</requiresDirectInvocation>
       <requiresProject>true</requiresProject>
@@ -232,6 +479,500 @@
         <maxConnections implementation="int" default-value="100">${docker.maxConnections}</maxConnections>
         <numRetries implementation="int">${docker.swarm.retries}</numRetries>
         <registry implementation="java.lang.String">${docker.registry}</registry>
+        <removeVolumes implementation="boolean" default-value="false">${docker.removeVolumes}</removeVolumes>
+        <session implementation="org.apache.maven.execution.MavenSession">${session}</session>
+        <skip implementation="boolean" default-value="false">${docker.skip}</skip>
+        <skipExtendedAuth implementation="boolean" default-value="false">${docker.skip.extendedAuth}</skipExtendedAuth>
+        <skipMachine implementation="boolean" default-value="false">${docker.skip.machine}</skipMachine>
+        <useColor implementation="boolean" default-value="true">${docker.useColor}</useColor>
+        <verbose implementation="boolean" default-value="false">${docker.verbose}</verbose>
+      </configuration>
+    </mojo>
+    <mojo>
+      <goal>join</goal>
+      <requiresDirectInvocation>false</requiresDirectInvocation>
+      <requiresProject>true</requiresProject>
+      <requiresReports>false</requiresReports>
+      <aggregator>false</aggregator>
+      <requiresOnline>false</requiresOnline>
+      <inheritedByDefault>true</inheritedByDefault>
+      <phase>install</phase>
+      <implementation>com.tibco.bw.JoinSwarmMojo</implementation>
+      <language>java</language>
+      <instantiationStrategy>per-lookup</instantiationStrategy>
+      <executionStrategy>once-per-session</executionStrategy>
+      <threadSafe>false</threadSafe>
+      <parameters>
+        <parameter>
+          <name>apiVersion</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>authConfig</name>
+          <type>io.fabric8.maven.docker.config.RegistryAuthConfiguration</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>autoPull</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>baseUrl</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>certPath</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>dockerHost</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>URL to docker daemon</description>
+        </parameter>
+        <parameter>
+          <name>dockerSwarmAddress</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>execution</name>
+          <type>org.apache.maven.plugin.MojoExecution</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>filter</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Whether to restrict operation to a single image. This can be either the image or an alias name. It can also be comma separated list. This parameter has to be set via the command line s system property.</description>
+        </parameter>
+        <parameter>
+          <name>forceNewCluster</name>
+          <type>java.lang.Boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>imagePullPolicy</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>images</name>
+          <type>java.util.List</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Image configurations configured directly.</description>
+        </parameter>
+        <parameter>
+          <name>keepContainer</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>logDate</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>logStdout</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>machine</name>
+          <type>io.fabric8.maven.docker.config.DockerMachineConfiguration</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>maxConnections</name>
+          <type>int</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>numRetries</name>
+          <type>int</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>registry</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>remoteAddr</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>removeVolumes</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>session</name>
+          <type>org.apache.maven.execution.MavenSession</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>skip</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>skipExtendedAuth</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Skip extended authentication</description>
+        </parameter>
+        <parameter>
+          <name>skipMachine</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Whether the usage of docker machine should be skipped competely</description>
+        </parameter>
+        <parameter>
+          <name>token</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>useColor</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>verbose</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>volumes</name>
+          <type>java.util.List</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Volume configuration</description>
+        </parameter>
+      </parameters>
+      <configuration>
+        <apiVersion implementation="java.lang.String">${docker.apiVersion}</apiVersion>
+        <autoPull implementation="java.lang.String">${docker.autoPull}</autoPull>
+        <baseUrl implementation="java.lang.String">${bwdocker.host}</baseUrl>
+        <certPath implementation="java.lang.String">${bwdocker.certPath}</certPath>
+        <dockerHost implementation="java.lang.String">${docker.host}</dockerHost>
+        <dockerSwarmAddress implementation="java.lang.String">${docker.swarm.address}</dockerSwarmAddress>
+        <execution implementation="org.apache.maven.plugin.MojoExecution">${mojoExecution}</execution>
+        <filter implementation="java.lang.String">${docker.filter}</filter>
+        <forceNewCluster implementation="java.lang.Boolean">${docker.swarm.force.newcluster}</forceNewCluster>
+        <imagePullPolicy implementation="java.lang.String">${docker.imagePullPolicy}</imagePullPolicy>
+        <keepContainer implementation="boolean" default-value="false">${docker.keepContainer}</keepContainer>
+        <logDate implementation="java.lang.String">${docker.logDate}</logDate>
+        <logStdout implementation="boolean" default-value="false">${docker.logStdout}</logStdout>
+        <maxConnections implementation="int" default-value="100">${docker.maxConnections}</maxConnections>
+        <numRetries implementation="int">${docker.swarm.retries}</numRetries>
+        <registry implementation="java.lang.String">${docker.registry}</registry>
+        <remoteAddr implementation="java.lang.String">${bwdocker.remoteAddr}</remoteAddr>
+        <removeVolumes implementation="boolean" default-value="false">${docker.removeVolumes}</removeVolumes>
+        <session implementation="org.apache.maven.execution.MavenSession">${session}</session>
+        <skip implementation="boolean" default-value="false">${docker.skip}</skip>
+        <skipExtendedAuth implementation="boolean" default-value="false">${docker.skip.extendedAuth}</skipExtendedAuth>
+        <skipMachine implementation="boolean" default-value="false">${docker.skip.machine}</skipMachine>
+        <token implementation="java.lang.String">${bwdocker.joinToken}</token>
+        <useColor implementation="boolean" default-value="true">${docker.useColor}</useColor>
+        <verbose implementation="boolean" default-value="false">${docker.verbose}</verbose>
+      </configuration>
+    </mojo>
+    <mojo>
+      <goal>leave</goal>
+      <requiresDirectInvocation>false</requiresDirectInvocation>
+      <requiresProject>true</requiresProject>
+      <requiresReports>false</requiresReports>
+      <aggregator>false</aggregator>
+      <requiresOnline>false</requiresOnline>
+      <inheritedByDefault>true</inheritedByDefault>
+      <phase>post-integration-test</phase>
+      <implementation>com.tibco.bw.LeaveSwarmMojo</implementation>
+      <language>java</language>
+      <instantiationStrategy>per-lookup</instantiationStrategy>
+      <executionStrategy>once-per-session</executionStrategy>
+      <threadSafe>false</threadSafe>
+      <parameters>
+        <parameter>
+          <name>apiVersion</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>authConfig</name>
+          <type>io.fabric8.maven.docker.config.RegistryAuthConfiguration</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>autoPull</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>baseUrl</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>certPath</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>dockerHost</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>URL to docker daemon</description>
+        </parameter>
+        <parameter>
+          <name>dockerSwarmAddress</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>execution</name>
+          <type>org.apache.maven.plugin.MojoExecution</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>filter</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Whether to restrict operation to a single image. This can be either the image or an alias name. It can also be comma separated list. This parameter has to be set via the command line s system property.</description>
+        </parameter>
+        <parameter>
+          <name>forceLeave</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>forceNewCluster</name>
+          <type>java.lang.Boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>imagePullPolicy</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>images</name>
+          <type>java.util.List</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Image configurations configured directly.</description>
+        </parameter>
+        <parameter>
+          <name>keepContainer</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>logDate</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>logStdout</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>machine</name>
+          <type>io.fabric8.maven.docker.config.DockerMachineConfiguration</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>maxConnections</name>
+          <type>int</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>numRetries</name>
+          <type>int</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>registry</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>remoteAddr</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>removeVolumes</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>session</name>
+          <type>org.apache.maven.execution.MavenSession</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>skip</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>skipExtendedAuth</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Skip extended authentication</description>
+        </parameter>
+        <parameter>
+          <name>skipMachine</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Whether the usage of docker machine should be skipped competely</description>
+        </parameter>
+        <parameter>
+          <name>useColor</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>verbose</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>volumes</name>
+          <type>java.util.List</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Volume configuration</description>
+        </parameter>
+      </parameters>
+      <configuration>
+        <apiVersion implementation="java.lang.String">${docker.apiVersion}</apiVersion>
+        <autoPull implementation="java.lang.String">${docker.autoPull}</autoPull>
+        <baseUrl implementation="java.lang.String">${bwdocker.host}</baseUrl>
+        <certPath implementation="java.lang.String">${bwdocker.certPath}</certPath>
+        <dockerHost implementation="java.lang.String">${docker.host}</dockerHost>
+        <dockerSwarmAddress implementation="java.lang.String">${docker.swarm.address}</dockerSwarmAddress>
+        <execution implementation="org.apache.maven.plugin.MojoExecution">${mojoExecution}</execution>
+        <filter implementation="java.lang.String">${docker.filter}</filter>
+        <forceLeave implementation="boolean">${bwdocker.forceLeave}</forceLeave>
+        <forceNewCluster implementation="java.lang.Boolean">${docker.swarm.force.newcluster}</forceNewCluster>
+        <imagePullPolicy implementation="java.lang.String">${docker.imagePullPolicy}</imagePullPolicy>
+        <keepContainer implementation="boolean" default-value="false">${docker.keepContainer}</keepContainer>
+        <logDate implementation="java.lang.String">${docker.logDate}</logDate>
+        <logStdout implementation="boolean" default-value="false">${docker.logStdout}</logStdout>
+        <maxConnections implementation="int" default-value="100">${docker.maxConnections}</maxConnections>
+        <numRetries implementation="int">${docker.swarm.retries}</numRetries>
+        <registry implementation="java.lang.String">${docker.registry}</registry>
+        <remoteAddr implementation="java.lang.String">${bwdocker.remoteAddr}</remoteAddr>
         <removeVolumes implementation="boolean" default-value="false">${docker.removeVolumes}</removeVolumes>
         <session implementation="org.apache.maven.execution.MavenSession">${session}</session>
         <skip implementation="boolean" default-value="false">${docker.skip}</skip>

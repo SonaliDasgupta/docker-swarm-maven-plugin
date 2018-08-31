@@ -1,5 +1,6 @@
 package com.tibco.bw;
 
+
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import java.io.IOException;
@@ -11,7 +12,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tibco.bw.DockerAccessObjectWithHcClientSwarm.HcChunkedResponseHandlerWrapper;
@@ -21,13 +21,14 @@ import io.fabric8.maven.docker.AbstractDockerMojo;
 import io.fabric8.maven.docker.access.DockerAccessException;
 import io.fabric8.maven.docker.access.ExecException;
 import io.fabric8.maven.docker.access.chunked.PullOrPushResponseJsonHandler;
-import io.fabric8.maven.docker.service.DockerAccessFactory;
-import io.fabric8.maven.docker.service.DockerAccessFactory.DockerAccessContext;
 import io.fabric8.maven.docker.service.ServiceHub;
+import io.fabric8.maven.docker.service.DockerAccessFactory.DockerAccessContext;
 
 
-@Mojo(name = "init", defaultPhase = LifecyclePhase.INSTALL)
-public class InitSwarmMojo extends AbstractDockerMojo{
+@Mojo(name = "leave", defaultPhase = LifecyclePhase.POST_INTEGRATION_TEST)
+public class LeaveSwarmMojo extends AbstractDockerMojo {
+	
+	
 	
 	@Parameter(property="docker.swarm.address")
 	private String dockerSwarmAddress;
@@ -48,21 +49,22 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 	    private String certPath;
 	 
 	 
-	 /*2 appraoches for getting these props:
-	1. define in xml tags similar to docker maven plugin : see how its done in code (preferred) - explore how the props turn up in xml tags
-	2. see the application project, read in docker-dev props, and take - only for now
-	*/
+	 @Parameter(property= "bwdocker.remoteAddr")
+	 private String remoteAddr;
 	 
+	 @Parameter(property = "bwdocker.forceLeave")
+	 private boolean forceLeave;
 	 
-	
 
 	@Override
 	protected void executeInternal(ServiceHub serviceHub)
 			throws DockerAccessException, ExecException, MojoExecutionException {
-		
 		Properties dockerProp= Utils.loadDockerProps();
 		baseUrl= dockerProp.getProperty("bwdocker.host");
 		numRetries=3;
+		forceLeave = ("true").equalsIgnoreCase(dockerProp.getProperty("bwdocker.forceLeaveSwarm"));
+		
+		
 	
 		
 		
@@ -82,23 +84,12 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 			}
 			
 		
-			String url=	String.format("%s/%s", baseUrl, "swarm/init");
-			String listenAdr= baseUrl.replace("http:", "");
-			Map<String, Object> props= new HashMap<String, Object>();
-			props.put("ListenAddr", "0.0.0.0:2377"); //ADD PROP OPTION FOR LISTEN ADDR, ONLY THR HOST NEEDED
-		//	props.put("AdvertiseAddr", dockerSwarmAddress);
-			props.put("AdvertiseAddr", "192.168.0.103");
-			props.put("ForceNewCluster", false); // CHANGE LATER
-			//ADD OTHER FIELDS ACCORDING TO THE Docker engine REST API
-			
-			
-			
-			String body =new ObjectMapper().writeValueAsString(props);
+			String url=	String.format("%s/%s=%s", baseUrl, "swarm/leave?force=", forceLeave); //CHANGE THIS LATER
 			
 			
 			
 			
-			dockerClient.communicateWithSwarm(url, body, new HcChunkedResponseHandlerWrapper(new PullOrPushResponseJsonHandler(dockerAccessContext.getLog())), HTTP_OK, 3);
+			dockerClient.communicateWithSwarm(url, null, new HcChunkedResponseHandlerWrapper(new PullOrPushResponseJsonHandler(dockerAccessContext.getLog())), HTTP_OK, 3);
 		//WRITE A NEW RESPONSE HANDLER!!	
 			
 			}
@@ -109,9 +100,3 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 		}	
 	}}
 	
-	
-	
-	
-	
-
-
