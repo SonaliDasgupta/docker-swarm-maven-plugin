@@ -1,9 +1,18 @@
-package com.tibco.bw.docker.swarm.services;
+package com.tibco.bw.docker.swarm.tasks;
+
+
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import java.io.IOException;
 import java.util.Properties;
+
+import io.fabric8.maven.docker.AbstractDockerMojo;
+import io.fabric8.maven.docker.access.DockerAccessException;
+import io.fabric8.maven.docker.access.ExecException;
+import io.fabric8.maven.docker.access.chunked.PullOrPushResponseJsonHandler;
+import io.fabric8.maven.docker.service.ServiceHub;
+import io.fabric8.maven.docker.service.DockerAccessFactory.DockerAccessContext;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -14,48 +23,32 @@ import com.tibco.bw.DockerAccessObjectWithHcClientSwarm;
 import com.tibco.bw.DockerAccessObjectWithHcClientSwarm.HcChunkedResponseHandlerWrapper;
 import com.tibco.bw.swarm.utils.Utils;
 
-import io.fabric8.maven.docker.AbstractDockerMojo;
-import io.fabric8.maven.docker.access.DockerAccessException;
-import io.fabric8.maven.docker.access.ExecException;
-import io.fabric8.maven.docker.access.chunked.PullOrPushResponseJsonHandler;
-import io.fabric8.maven.docker.service.ServiceHub;
-import io.fabric8.maven.docker.service.DockerAccessFactory.DockerAccessContext;
 
-
-@Mojo(name = "getservices", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
-public class GetServicesMojo extends AbstractDockerMojo {
+@Mojo(name = "taskinfo", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
+public class GetTaskInfoMojo extends AbstractDockerMojo {
 	
-	
-	
-	@Parameter(property="docker.swarm.address")
-	private String dockerSwarmAddress;
 	
 	@Parameter(property="bwdocker.host")
 	private String baseUrl;
-		
 	
 	@Parameter(property="docker.swarm.retries")
 	private int numRetries;
 	
-	
-	 
 	 @Parameter(property = "bwdocker.certPath")
-	    private String certPath;
-	 
-	 
-	 @Parameter(property= "bwdocker.remoteAddr")
-	 private String remoteAddr;
-	 
-	 
+	 private String certPath;
+	
+	@Parameter(property= "getinfo.task.id")
+	private String taskId;
+	
+	
 
 	@Override
 	protected void executeInternal(ServiceHub serviceHub)
 			throws DockerAccessException, ExecException, MojoExecutionException {
 		Properties dockerProp= Utils.loadDockerProps();
 		baseUrl= dockerProp.getProperty("bwdocker.host");
-		numRetries=3;
+		numRetries=3; //ADD A RETRY HANDLER IN THIS PLACE
 		
-	
 		
 		DockerAccessContext dockerAccessContext= getDockerAccessContext();
 		
@@ -72,11 +65,12 @@ public class GetServicesMojo extends AbstractDockerMojo {
 				baseUrl=baseUrl.replace("tcp", "http");
 			}
 			
+			
+			String url=new String();
 		
-			String url=	String.format("%s/%s", baseUrl, "services"); //CHANGE THIS LATER
-			
-			
-			
+			if(taskId!=null)
+			url=	String.format("%s/%s/%s", baseUrl, "tasks",taskId);
+				
 			
 			dockerClient.communicateWithSwarmGet(url, new HcChunkedResponseHandlerWrapper(new PullOrPushResponseJsonHandler(dockerAccessContext.getLog())), HTTP_OK, 1);
 		//WRITE A NEW RESPONSE HANDLER!!	
@@ -87,6 +81,7 @@ public class GetServicesMojo extends AbstractDockerMojo {
 			// TODO Auto-generated catch block
 		//	e.printStackTrace(); //THIS EXCEPTION COMES WHEN THE NODE TRIES TO JOIN ALREADY JOINED, JUST LOG THE MESSAGE
 		}	
-	}}
-	
+		
+	}
 
+}

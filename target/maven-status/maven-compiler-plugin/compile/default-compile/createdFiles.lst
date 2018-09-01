@@ -1,5 +1,7 @@
+com/tibco/bw/docker/swarm/tasks/GetTasksMojo.class
 com/tibco/bw/docker/swarm/services/UpdateServiceMojo.class
 com/tibco/bw/InitSwarmMojo.class
+com/tibco/bw/docker/swarm/tasks/GetTaskInfoMojo.class
 com/tibco/bw/DockerAccessObjectWithHcClientSwarm$HcChunkedResponseHandlerWrapper.class
 com/tibco/bw/docker/swarm/services/GetServicesMojo.class
 com/tibco/bw/DockerAccessObjectWithHcClientSwarm.class

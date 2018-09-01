@@ -1,6 +1,12 @@
-package com.tibco.bw.docker.swarm.services;
+package com.tibco.bw.docker.swarm.tasks;
 
 import static java.net.HttpURLConnection.HTTP_OK;
+import io.fabric8.maven.docker.AbstractDockerMojo;
+import io.fabric8.maven.docker.access.DockerAccessException;
+import io.fabric8.maven.docker.access.ExecException;
+import io.fabric8.maven.docker.access.chunked.PullOrPushResponseJsonHandler;
+import io.fabric8.maven.docker.service.ServiceHub;
+import io.fabric8.maven.docker.service.DockerAccessFactory.DockerAccessContext;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -14,16 +20,8 @@ import com.tibco.bw.DockerAccessObjectWithHcClientSwarm;
 import com.tibco.bw.DockerAccessObjectWithHcClientSwarm.HcChunkedResponseHandlerWrapper;
 import com.tibco.bw.swarm.utils.Utils;
 
-import io.fabric8.maven.docker.AbstractDockerMojo;
-import io.fabric8.maven.docker.access.DockerAccessException;
-import io.fabric8.maven.docker.access.ExecException;
-import io.fabric8.maven.docker.access.chunked.PullOrPushResponseJsonHandler;
-import io.fabric8.maven.docker.service.ServiceHub;
-import io.fabric8.maven.docker.service.DockerAccessFactory.DockerAccessContext;
-
-
-@Mojo(name = "getservices", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
-public class GetServicesMojo extends AbstractDockerMojo {
+@Mojo(name = "gettasks", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
+public class GetTasksMojo extends AbstractDockerMojo {
 	
 	
 	
@@ -73,7 +71,7 @@ public class GetServicesMojo extends AbstractDockerMojo {
 			}
 			
 		
-			String url=	String.format("%s/%s", baseUrl, "services"); //CHANGE THIS LATER
+			String url=	String.format("%s/%s", baseUrl, "tasks"); //CHANGE THIS LATER
 			
 			
 			
