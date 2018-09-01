@@ -11,6 +11,8 @@ import io.fabric8.maven.docker.util.Logger;
 
 
 
+
+
 import java.io.*;
 import java.net.URI;
 import java.util.*;
@@ -45,6 +47,7 @@ import org.json.JSONObject;
 
 import com.tibco.bw.DockerAccessObjectWithHcClientSwarm.HcChunkedResponseHandlerWrapper;
 
+
 import static java.net.HttpURLConnection.*;
 
 /**
@@ -74,7 +77,10 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
     private final Logger log;
 
     private final ApacheHttpClientDelegate delegate;
+ //   private final SwarmHttpClientDelegate swarmDelegate;
     private final UrlBuilder urlBuilder;
+    
+   
 
     /**
      * Create a new access for the given URL
@@ -98,12 +104,15 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
         }
         if (uri.getScheme().equalsIgnoreCase("unix")) {
             this.delegate = createHttpClient(new UnixSocketClientBuilder(uri.getPath(), maxConnections, log));
+        //    this.swarmDelegate= new SwarmHttpClientDelegate(new UnixSocketClientBuilder(uri.getPath(), maxConnections, log));
             this.urlBuilder = new UrlBuilder(UNIX_URL, apiVersion);
         } else if (uri.getScheme().equalsIgnoreCase("npipe")) {
         	this.delegate = createHttpClient(new NamedPipeClientBuilder(uri.getPath(), maxConnections, log), false);
+       // 	this.swarmDelegate = new SwarmHttpClientDelegate(new NamedPipeClientBuilder(uri.getPath(), maxConnections, log), false);
             this.urlBuilder = new UrlBuilder(NPIPE_URL, apiVersion);
         } else {
             this.delegate = createHttpClient(new HttpClientBuilder(isSSL(baseUrl) ? certPath : null, maxConnections));
+         //   this.swarmDelegate= new SwarmHttpClientDelegate(new HttpClientBuilder(isSSL(baseUrl) ? certPath : null, maxConnections));
             this.urlBuilder = new UrlBuilder(baseUrl, apiVersion);
         }
     }
@@ -364,6 +373,7 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
                      OutputStream out = compression.wrapOutputStream(new FileOutputStream(filename))) {
                     IOUtils.copy(stream, out);
                 }*/
+            
                 return null;
             }
         };
@@ -478,31 +488,7 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
         }
     }
 
-  /*  @Override
-    public void removeVolume(String name) throws DockerAccessException {
-        try {
-            String url = urlBuilder.removeVolume(name);
-            delegate.delete(url, HTTP_NO_CONTENT, HTTP_NOT_FOUND);
-        } catch (IOException e) {
-            throw new DockerAccessException(e, "Unable to remove volume [%s]", name);
-        }
-    }
-
-
-    // ---------------
-    // Lifecycle methods not needed here
-    @Override
-    public void start() {
-    }
-
-    @Override
-    public void shutdown() {
-        try {
-            delegate.close();
-        } catch (IOException exp) {
-            log.error("Error while closing HTTP client: " + exp,exp);
-        }
-    }*/
+ 
 
     ApacheHttpClientDelegate createHttpClient(ClientBuilder builder) throws IOException {
     	return createHttpClient(builder, true);
@@ -617,6 +603,8 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
             try {
             	
                 delegate.post(url, body, headers, handler, HTTP_OK);
+                if(status==200)
+					break;
                 return;
             } catch (HttpResponseException e) {
                 if (isRetryableErrorCode(e.getStatusCode()) && i != retries) {
@@ -644,25 +632,76 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
 
        
         public Object handleResponse(HttpResponse response) throws IOException {
-    /*        try  {
-            	InputStream stream = response.getEntity().getContent();
-            	
-                // Parse text as json
-               EntityStreamReaderUtil.processJsonStream(handler, stream);
-            }
-            finally{
-            	
-            }*/
+    
+        	if(response.getEntity()!=null){
+        		InputStream is=response.getEntity().getContent();
+        		if(is!=null){
+        			StringWriter writer = new StringWriter();
+        			IOUtils.copy(is, writer);
+        			System.out.println(writer.toString());
+        		}
+        		
+        	}
         	System.out.println(response);
             return response;
         }
     }
 
 
+//SET NUM OF RETRIES BY USER LATER
 
-
-
+	public void communicateWithSwarmGet(String url,
+			HcChunkedResponseHandlerWrapper handler,
+			int status, int retries) {
+		Map<String, String> headers=new HashMap<String, String>();
+    	headers.put("Content-Type", "application/json");
+    	
+    	
+    	for (int i = 0; i <= retries; i++) {
+            try {
+				delegate.get(url, handler, HTTP_OK);
+				
+				if(status==200)
+					break;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+        }
+		
+	}
 	
+	public void communicateWithSwarmDelete(String url,
+			HcChunkedResponseHandlerWrapper handler,
+			int status, int retries) {
+		Map<String, String> headers=new HashMap<String, String>();
+    	headers.put("Content-Type", "application/json");
+    	
+    	
+    	for (int i = 0; i <= retries; i++) {
+            try {
+            	
+				delegate.delete(url, handler, HTTP_OK);
+				if(status==200)
+					break;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+        }
+		
+	}
+
+
+
+
+
+
+
+
+
 	public List<Container> getContainersForImage(String image)
 			throws DockerAccessException {
 		// TODO Auto-generated method stub
@@ -672,12 +711,21 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
 
 
 
-	
+
+
+
+
+
 	public void startExecContainer(String containerId, LogOutputSpec outputSpec)
 			throws DockerAccessException {
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
+
+
 
 
 
@@ -690,6 +738,11 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
 
 
 
+
+
+
+
+
 	public void shutdown() {
 		// TODO Auto-generated method stub
 		
@@ -698,33 +751,13 @@ public class DockerAccessObjectWithHcClientSwarm implements DockerAccess {
 
 
 
+
+
+
+
+
 	public void removeVolume(String name) throws DockerAccessException {
 		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-
-
-
-	public void communicateWithSwarmGet(String url,
-			HcChunkedResponseHandlerWrapper handler,
-			int status, int retries) {
-		Map<String, String> headers=new HashMap<String, String>();
-    	headers.put("Content-Type", "application/json");
-    	
-    	
-    	for (int i = 0; i <= retries; i++) {
-            try {
-				delegate.get(url, handler, HTTP_OK);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return;
-        }
 		
 	}
 }

@@ -1,8 +1,12 @@
-com/tibco/bw/JoinSwarmMojo.class
-com/tibco/bw/swarm/utils/Utils.class
-com/tibco/bw/LeaveSwarmMojo.class
+com/tibco/bw/docker/swarm/services/UpdateServiceMojo.class
 com/tibco/bw/InitSwarmMojo.class
 com/tibco/bw/DockerAccessObjectWithHcClientSwarm$HcChunkedResponseHandlerWrapper.class
 com/tibco/bw/docker/swarm/services/GetServicesMojo.class
 com/tibco/bw/DockerAccessObjectWithHcClientSwarm.class
+com/tibco/bw/docker/swarm/services/CreateServiceMojo.class
+com/tibco/bw/JoinSwarmMojo.class
+com/tibco/bw/swarm/utils/Utils.class
+com/tibco/bw/LeaveSwarmMojo.class
+com/tibco/bw/docker/swarm/services/DeleteServiceMojo.class
+com/tibco/bw/docker/swarm/services/GetServiceInfoMojo.class
 com/tibco/bw/DockerAccessObjectWithHcClientSwarm$1.class
