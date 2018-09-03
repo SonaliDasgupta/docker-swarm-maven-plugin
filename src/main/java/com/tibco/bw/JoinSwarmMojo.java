@@ -54,6 +54,13 @@ public class JoinSwarmMojo extends AbstractDockerMojo {
 	 @Parameter(property = "bwdocker.joinToken")
 	 private String token;
 	 
+	 
+		@Parameter(property="swarm.listenAddr")
+		private String listenAddr;
+		
+		@Parameter(property= "swarm.advertiseAddr")
+		private String advertiseAddr;
+	 
 
 	@Override
 	protected void executeInternal(ServiceHub serviceHub)
@@ -61,11 +68,18 @@ public class JoinSwarmMojo extends AbstractDockerMojo {
 		Properties dockerProp= Utils.loadDockerProps();
 		baseUrl= dockerProp.getProperty("bwdocker.host");
 		numRetries=3;
-		remoteAddr="0.0.0.0:2377"; //FOR NOW, READ FROM docker-dev.props later
-		// remoteAddr = dockerProp.getProperty("bwdocker.remoteAddr");
+		if(remoteAddr==null)
+		remoteAddr = Utils.loadSwarmPropFromFile("joinSwarm", "remoteManagerAddress");	
 		
-		token = dockerProp.getProperty("bwdocker.joinToken");
+		if(token==null)
+		token = Utils.loadSwarmPropFromFile("joinSwarm", "joinToken");	
 		
+		if(listenAddr==null)
+			listenAddr = Utils.loadSwarmPropFromFile("initSwarm", "listenAddress");
+		
+		if(advertiseAddr==null){
+			advertiseAddr = Utils.loadSwarmPropFromFile("initSwarm", "advertiseAddress");
+		}
 	
 		
 		
@@ -86,14 +100,15 @@ public class JoinSwarmMojo extends AbstractDockerMojo {
 			
 		
 			String url=	String.format("%s/%s", baseUrl, "swarm/join");
-			String listenAdr= baseUrl.replace("http:", "");
+			listenAddr= listenAddr.replace("tcp:", "");
+			advertiseAddr= advertiseAddr.replace("tcp:", "");
 			Map<String, Object> props= new HashMap<String, Object>();
-			props.put("ListenAddr", "0.0.0.0:2377"); //ADD PROP OPTION FOR LISTEN ADDR, ONLY THR HOST NEEDED
-		//	props.put("AdvertiseAddr", dockerSwarmAddress);
-			props.put("AdvertiseAddr", "192.168.0.103");
+			props.put("ListenAddr", listenAddr); //ADD PROP OPTION FOR LISTEN ADDR, ONLY THR HOST NEEDED
+		
+			props.put("AdvertiseAddr", advertiseAddr);
 			String[] addr= new String[10];
 			addr[0]= remoteAddr;
-			props.put("RemoteAddrs", addr);
+			props.put("RemoteAddrs", addr); //?
 			
 			
 			props.put("JoinToken", token); // CHANGE LATER

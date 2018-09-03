@@ -28,6 +28,13 @@
       <threadSafe>false</threadSafe>
       <parameters>
         <parameter>
+          <name>advertiseAddr</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
           <name>apiVersion</name>
           <type>java.lang.String</type>
           <required>false</required>
@@ -116,6 +123,13 @@ This parameter has to be set via the command line s system property.</descriptio
         <parameter>
           <name>keepContainer</name>
           <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>listenAddr</name>
+          <type>java.lang.String</type>
           <required>false</required>
           <editable>true</editable>
           <description></description>
@@ -248,6 +262,7 @@ This parameter has to be set via the command line s system property.</descriptio
         </parameter>
       </parameters>
       <configuration>
+        <advertiseAddr implementation="java.lang.String">${swarm.advertiseAddr}</advertiseAddr>
         <apiVersion implementation="java.lang.String">${docker.apiVersion}</apiVersion>
         <autoPull implementation="java.lang.String">${docker.autoPull}</autoPull>
         <baseUrl implementation="java.lang.String">${bwdocker.host}</baseUrl>
@@ -259,6 +274,7 @@ This parameter has to be set via the command line s system property.</descriptio
         <forceNewCluster implementation="java.lang.Boolean">${docker.swarm.force.newcluster}</forceNewCluster>
         <imagePullPolicy implementation="java.lang.String">${docker.imagePullPolicy}</imagePullPolicy>
         <keepContainer implementation="boolean" default-value="false">${docker.keepContainer}</keepContainer>
+        <listenAddr implementation="java.lang.String">${swarm.listenAddr}</listenAddr>
         <logDate implementation="java.lang.String">${docker.logDate}</logDate>
         <logStdout implementation="boolean" default-value="false">${docker.logStdout}</logStdout>
         <maxConnections implementation="int" default-value="100">${docker.maxConnections}</maxConnections>
