@@ -67,7 +67,8 @@ public class GetTaskInfoMojo extends AbstractDockerMojo {
 			
 			
 			String url=new String();
-		
+			
+		//TASK ID COMPULSARY AS SYSTEM PROP
 			if(taskId!=null)
 			url=	String.format("%s/%s/%s", baseUrl, "tasks",taskId);
 				

@@ -71,7 +71,7 @@ public class DeleteServiceMojo extends AbstractDockerMojo{
 			
 			String url=new String();
 		
-			if(serviceId!=null)
+			if(serviceId!=null) //SERVICE ID/NAME COMPULSARY AS SYSTEM PROP
 			url=	String.format("%s/%s/%s", baseUrl, "services",serviceId);
 			
 			

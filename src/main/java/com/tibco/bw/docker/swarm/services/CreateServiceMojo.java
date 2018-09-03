@@ -51,7 +51,7 @@ public class CreateServiceMojo extends AbstractDockerMojo {
 	 @Parameter(property = "bwdocker.forceLeave")
 	 private boolean forceLeave;
 	 
-	 @Parameter(property = "bwdocker.swarm.servicefile")
+	 @Parameter(property = "swarm.servicefile")
 	 private String swarmServiceFile;
 	 
 	 //FOLLOW THE FABRIC8 JSON APPROACH OF EITHER CREATING A MINIMAL JSON OBJECT FOR SERVICE OR PROVIDING A JSON FILE FOR CONFIG
@@ -69,6 +69,10 @@ public class CreateServiceMojo extends AbstractDockerMojo {
 		 * 
 		 * FOR THAT , CALL THE DOCKER MAVEN PLUGIN DOCKER BUILD METHOD FROM HERE INTERNALLY
 		 */
+		
+		if(swarmServiceFile==null){
+			swarmServiceFile = Utils.loadSwarmPropFromFile("createService", "serviceDataLocation");
+		}
 		
 		DockerAccessContext dockerAccessContext= getDockerAccessContext();
 		
@@ -90,14 +94,10 @@ public class CreateServiceMojo extends AbstractDockerMojo {
 			
 			
 			//READ THE BODY FROM FILE AS OF NOW, PROVIDE A MINIMAL CREATION WITH PROPERTIES LATER
-			InputStream is=new FileInputStream(swarmServiceFile);
-			StringWriter writer =new StringWriter();
-			IOUtils.copy(is, writer);
-			String body= writer.toString();
 			
+			String body= Utils.getFileContents(swarmServiceFile);
 			
-			
-			
+				
 			dockerClient.communicateWithSwarm(url, body, new HcChunkedResponseHandlerWrapper(new PullOrPushResponseJsonHandler(dockerAccessContext.getLog())), HTTP_OK, 3);
 		//WRITE A NEW RESPONSE HANDLER!!	
 			
@@ -105,7 +105,7 @@ public class CreateServiceMojo extends AbstractDockerMojo {
 			
 		 catch (IOException e) {
 			// TODO Auto-generated catch block
-		//	e.printStackTrace(); //THIS EXCEPTION COMES WHEN THE NODE TRIES TO JOIN ALREADY JOINED, JUST LOG THE MESSAGE
+	//		e.printStackTrace(); //THIS EXCEPTION COMES WHEN THE NODE TRIES TO JOIN ALREADY JOINED, JUST LOG THE MESSAGE
 		}	
 	}}
 	

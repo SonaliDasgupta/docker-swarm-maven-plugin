@@ -252,7 +252,7 @@
         <skip implementation="boolean" default-value="false">${docker.skip}</skip>
         <skipExtendedAuth implementation="boolean" default-value="false">${docker.skip.extendedAuth}</skipExtendedAuth>
         <skipMachine implementation="boolean" default-value="false">${docker.skip.machine}</skipMachine>
-        <swarmServiceFile implementation="java.lang.String">${bwdocker.swarm.servicefile}</swarmServiceFile>
+        <swarmServiceFile implementation="java.lang.String">${swarm.servicefile}</swarmServiceFile>
         <useColor implementation="boolean" default-value="true">${docker.useColor}</useColor>
         <verbose implementation="boolean" default-value="false">${docker.verbose}</verbose>
       </configuration>

@@ -73,19 +73,21 @@ public class UpdateServiceMojo extends AbstractDockerMojo{
 				baseUrl=baseUrl.replace("tcp", "http");
 			}
 			
+		
 			
 			String url=new String();
 		
-			if(serviceId!=null)
+			if(serviceId!=null) //SERVICE ID HAS TO BE COMPULSORILY PASSED AS PROP
 			url=	String.format("%s/%s/%s/%s", baseUrl, "services",serviceId,"update");
 			
 			//ONLY ID ALLOWED, PROVIDE FUNCTIONALITY LATER TO ALLOW NAME TOO BY QUERYING TO FIND ITS ID, USING THE GETINFO MOJO CALLING IT INTERNALLY
 			
-			InputStream is=new FileInputStream(updateFile);
-			StringWriter writer= new StringWriter();
-			IOUtils.copy(is, writer);
-			String body= writer.toString();
+			if(updateFile==null){
+				updateFile = Utils.loadSwarmPropFromFile("updateService", "serviceUpdateDataLocation");
+			}
 			
+			
+			String body= Utils.getFileContents(updateFile);
 				
 		
 			//CHANGE THIS NAME TO add post in method name

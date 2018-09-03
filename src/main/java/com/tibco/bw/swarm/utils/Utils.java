@@ -5,11 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -74,7 +76,7 @@ public class Utils {
 
 	}
 	
-	public static String loadSwarmProp(String propFile, String propName){
+	private static String loadSwarmProp(String propFile, String propName){
 		InputStream input=null;
 		try { //OPTIMIZE FOR PROFILES LATER
 			input = new FileInputStream(getFile(propFile));
@@ -154,6 +156,24 @@ public class Utils {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static String getFileContents(String file){
+		InputStream is;
+		try {
+			is = new FileInputStream(file);
+			StringWriter writer= new StringWriter();
+			IOUtils.copy(is, writer);
+			return writer.toString();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
+		
+		return "";
 	}
 	
 	private static String getTagValue(String tag, Element element){
