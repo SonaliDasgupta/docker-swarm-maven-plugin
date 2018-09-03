@@ -53,7 +53,7 @@ public class LeaveSwarmMojo extends AbstractDockerMojo {
 	 private String remoteAddr;
 	 
 	 @Parameter(property = "bwdocker.forceLeave")
-	 private boolean forceLeave;
+	 private boolean forceLeave; //FIND A WAY TO OVERRIDE THIS USING A STRING PROPERTY LATER
 	 
 
 	@Override
@@ -61,8 +61,10 @@ public class LeaveSwarmMojo extends AbstractDockerMojo {
 			throws DockerAccessException, ExecException, MojoExecutionException {
 		Properties dockerProp= Utils.loadDockerProps();
 		baseUrl= dockerProp.getProperty("bwdocker.host");
-		numRetries=3;
-		forceLeave = ("true").equalsIgnoreCase(dockerProp.getProperty("bwdocker.forceLeaveSwarm"));
+		numRetries=3; //READ THIS FROM UI
+		
+		
+		forceLeave = ("true").equalsIgnoreCase(Utils.loadSwarmPropFromFile("leaveSwarm", "forceLeave"));
 		
 		
 	

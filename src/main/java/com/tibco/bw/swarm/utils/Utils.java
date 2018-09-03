@@ -28,7 +28,7 @@ public class Utils {
 
 	}
 
-	public static String getFile(String fileName){
+	private static String getFile(String fileName){
 
 		String file= (getWorkspacePath()+File.separator+fileName);
 		File propFile= new File(file);
@@ -103,7 +103,7 @@ public class Utils {
 
 	}
 	
-	public static String findSwarmPropFile(Document doc){
+	private static String findSwarmPropFile(Document doc){
 		NodeList propNodeList = doc.getElementsByTagName("properties");
 		if(propNodeList!=null && propNodeList.getLength()>0){
 			Node propNode= propNodeList.item(0);
@@ -156,7 +156,7 @@ public class Utils {
 		return null;
 	}
 	
-	public static String getTagValue(String tag, Element element){
+	private static String getTagValue(String tag, Element element){
 		NodeList nodeList = element.getElementsByTagName(tag).item(0).getChildNodes();
 		Node node = (Node) nodeList.item(0);
 		return node.getNodeValue();
