@@ -29,13 +29,19 @@ import io.fabric8.maven.docker.service.ServiceHub;
 @Mojo(name = "init", defaultPhase = LifecyclePhase.INSTALL)
 public class InitSwarmMojo extends AbstractDockerMojo{
 	
+	@Parameter(property="docker.host")
+	private String dockerHost;
+	
 	@Parameter(property="docker.swarm.address")
 	private String dockerSwarmAddress;
 	
-	@Parameter(property="bwdocker.host")
-	private String baseUrl;
+	@Parameter(property="swarm.listenAddr")
+	private String listenAddr;
 	
-	@Parameter(property="docker.swarm.force.newcluster")
+	@Parameter(property= "swarm.advertiseAddr")
+	private String advertiseAddr;
+	
+	@Parameter(property="swarm.force.newcluster")
 	private Boolean forceNewCluster;
 	
 	
@@ -45,24 +51,42 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 	
 	 
 	 @Parameter(property = "bwdocker.certPath")
-	    private String certPath;
-	 
-	 
-	 /*2 appraoches for getting these props:
-	1. define in xml tags similar to docker maven plugin : see how its done in code (preferred) - explore how the props turn up in xml tags
-	2. see the application project, read in docker-dev props, and take - only for now
-	*/
-	 
-	 
+	    private String certPath; //THIS IS GETTING DUPLICATED
+	 	 
 	
 
 	@Override
 	protected void executeInternal(ServiceHub serviceHub)
 			throws DockerAccessException, ExecException, MojoExecutionException {
 		
-		Properties dockerProp= Utils.loadDockerProps();
-		baseUrl= dockerProp.getProperty("bwdocker.host");
-		numRetries=3;
+		Properties dockerProps = Utils.loadDockerProps();
+		
+		if(dockerHost==null){
+			dockerHost = dockerProps.getProperty("bwdocker.host");
+		}
+		
+		
+		if(listenAddr==null)
+		listenAddr = Utils.loadSwarmPropFromFile("initSwarm", "listenAddress");
+		
+	
+		
+		if(advertiseAddr==null){
+			advertiseAddr = Utils.loadSwarmPropFromFile("initSwarm", "advertiseAddress");
+		}
+		
+	
+		
+		if(forceNewCluster==null){
+			forceNewCluster= ("true").equalsIgnoreCase(Utils.loadSwarmPropFromFile("initSwarm", "forceNewCluster"))?true:false;
+		}
+		
+		//WILL DOCKER CERT PATH BE SAME AS SWARM CERT PATH??
+		if(certPath==null){
+			certPath=dockerProps.getProperty("bwdocker.certPath");
+		}
+		
+		numRetries=3; //ADD NUM RETRIES AS UI PROP IN BW6 PLUGIN MAVEN
 	
 		
 		
@@ -70,25 +94,33 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 		
 		try {
 			
-		
+			dockerHost= dockerHost.replace("127.0.0.1", "0.0.0.0");
 			
-			DockerAccessObjectWithHcClientSwarm dockerClient=new DockerAccessObjectWithHcClientSwarm("v1.38", baseUrl,  certPath,
+			DockerAccessObjectWithHcClientSwarm dockerClient=new DockerAccessObjectWithHcClientSwarm("v1.38", dockerHost,  certPath,
                     dockerAccessContext.getMaxConnections(),
                     dockerAccessContext.getLog() );
 			
+			if(dockerHost!=null && dockerHost.startsWith("tcp://")){
+				dockerHost= dockerHost.replace("tcp://","http://");
+			}
 			
-			if(baseUrl!=null && baseUrl.startsWith("tcp")){
-				baseUrl=baseUrl.replace("tcp", "http");
+			if(listenAddr!=null && listenAddr.startsWith("tcp")){
+				listenAddr=listenAddr.replace("tcp://", "");
+			}
+			
+			//CONSIDER THE UNIX CASES TOO , IS TCP A RIGHT PREEFIX
+			if(advertiseAddr!=null && advertiseAddr.startsWith("tcp")){
+				advertiseAddr=advertiseAddr.replace("tcp://", "");
 			}
 			
 		
-			String url=	String.format("%s/%s", baseUrl, "swarm/init");
-			String listenAdr= baseUrl.replace("http:", "");
+			String url=	String.format("%s/%s", dockerHost, "swarm/init");
+		//	String listenAdr= listenAddr.replace("http:", "");
 			Map<String, Object> props= new HashMap<String, Object>();
-			props.put("ListenAddr", "0.0.0.0:2377"); //ADD PROP OPTION FOR LISTEN ADDR, ONLY THR HOST NEEDED
-		//	props.put("AdvertiseAddr", dockerSwarmAddress);
-			props.put("AdvertiseAddr", "192.168.0.103");
-			props.put("ForceNewCluster", false); // CHANGE LATER
+			props.put("ListenAddr", listenAddr); 
+		
+			props.put("AdvertiseAddr", advertiseAddr);
+			props.put("ForceNewCluster", forceNewCluster); 
 			//ADD OTHER FIELDS ACCORDING TO THE Docker engine REST API
 			
 			
@@ -105,7 +137,7 @@ public class InitSwarmMojo extends AbstractDockerMojo{
 			
 		 catch (IOException e) {
 			// TODO Auto-generated catch block
-		//	e.printStackTrace(); //THIS EXCEPTION COMES WHEN THE NODE TRIES TO JOIN ALREADY JOINED, JUST LOG THE MESSAGE
+	//		e.printStackTrace(); //THIS EXCEPTION COMES WHEN THE NODE TRIES TO JOIN ALREADY JOINED, JUST LOG THE MESSAGE
 		}	
 	}}
 	
