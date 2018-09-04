@@ -36,7 +36,7 @@ public class Utils {
 		File propFile= new File(file);
 
 		if(!propFile.exists()){ //IT IS INSIDE APP MODULE, NAVIGATE TO APPLICATION , //CHECK IF THIS LOGIN IS CORRECT , IT MIGHT NOT BE ? SINCE APP MODULE MIGHT END WITH .module
-			file= (getWorkspacePath()+".application"+File.separator+"docker-dev.properties");
+			file= (getWorkspacePath()+".application"+File.separator+fileName);
 			propFile=new File(file);
 
 			if(!propFile.exists()){
@@ -52,6 +52,11 @@ public class Utils {
 
 		return file;
 
+	}
+	
+	public static String getPomFile(){
+		return getFile("pom.xml");
+		
 	}
 
 

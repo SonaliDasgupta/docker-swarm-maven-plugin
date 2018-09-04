@@ -48,7 +48,7 @@ public class UpdateServiceMojo extends AbstractDockerMojo{
 	@Parameter(property = "service.update.file")
 	private String updateFile;
 	
-	//FOLLOW THE SAME FILE APPROACH FOR CREATING SERVICE AS OF NOW, IMPROOVE ON THAT LATER, TRY DOCKER CREATE ON ALREADY CREATED SERVICE AND SEE IF ERROR
+	//FOLLOW THE SAME FILE APPROACH FOR CREATING SERVICE AS OF NOW, IMPROVE ON THAT LATER, TRY DOCKER CREATE ON ALREADY CREATED SERVICE AND SEE IF ERROR
 
 	@Override
 	protected void executeInternal(ServiceHub serviceHub)
