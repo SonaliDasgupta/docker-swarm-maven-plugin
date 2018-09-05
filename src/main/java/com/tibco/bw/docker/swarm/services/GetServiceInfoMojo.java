@@ -40,6 +40,9 @@ public class GetServiceInfoMojo extends AbstractDockerMojo {
 	
 	@Parameter(property= "getinfo.service.name")
 	private String serviceName;
+	
+	
+	
 
 	@Override
 	protected void executeInternal(ServiceHub serviceHub)
